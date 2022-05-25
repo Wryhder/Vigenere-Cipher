@@ -82,7 +82,7 @@ func convertSecretKey(secretKey string) (keysToStringifiedNums []string) {
 }
 
 // This function encrypts plaintext and returns the cipher
-func encrypt(plaintext, secretKey string) []string {
+func encrypt(plaintext, secretKey string) string {
 	lengthOfPlaintext := len([]rune(plaintext))
 	lengthOfSecretKey := len([]rune(secretKey))
 	splitPlaintext := strings.Split(plaintext, "")
@@ -127,7 +127,7 @@ func encrypt(plaintext, secretKey string) []string {
 		}
     }
 
-	return cipher
+	return strings.Join(cipher, "")
 }
 
 func decrypt(cipher, secretKey string) string {
