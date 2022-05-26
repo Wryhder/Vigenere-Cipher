@@ -81,6 +81,11 @@ func convertSecretKey(secretKey string) (keysToStringifiedNums []string) {
 	return keysToStringifiedNums
 }
 
+/* TODO: Encrypt function only properly encrypts single words. It fails for sentences because
+the plaintext is split directly using strings.Split(plaintext, ""). Modify function such that
+spaces are removed, then use the Split() method to get all the characters in the plaintext.
+Also, the function does not account for lowcase string arguments. */
+
 // This function encrypts plaintext and returns the cipher
 func encrypt(plaintext, secretKey string) string {
 	lengthOfPlaintext := len([]rune(plaintext))
