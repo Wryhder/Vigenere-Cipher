@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"strconv"
+	"math"
 )
 
 func mapAlphabetToNum() (alphabetMap map[string]int) {
@@ -136,10 +137,48 @@ func encrypt(plaintext, secretKey string) string {
 }
 
 func decrypt(cipher, secretKey string) string {
-	return ""
+	lengthOfCipher := len([]rune(cipher))
+	lengthOfSecretKey := len([]rune(secretKey))
+	splitCipher := strings.Split(cipher, "")
+	plaintext := []string{""}
+
+	if lengthOfCipher != lengthOfSecretKey {
+		splitSecret := strings.Split(secretKey, "")
+
+		firstPartOfRepeatedSecretKey := strings.Repeat(secretKey, lengthOfCipher / lengthOfSecretKey)
+		secondPartOfRepeatedSecretKey := strings.Join(splitSecret[:lengthOfCipher % lengthOfSecretKey], "")
+
+		keysToStringifiedNums := convertSecretKey(firstPartOfRepeatedSecretKey + secondPartOfRepeatedSecretKey)
+		
+		for index, numOfShifts := range keysToStringifiedNums {
+			numOfShifts, _ := strconv.Atoi(numOfShifts)
+			positionOfCipherCharInAlphabet := mapAlphabetToNum()[splitCipher[index]]
+			if positionOfCipherCharInAlphabet - numOfShifts > 0 {
+				plaintext = append(plaintext, mapNumToAlphabet()[int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))])
+			} else {
+				plaintext = append(plaintext, mapNumToAlphabet()[(26 - int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))) % 26])
+			}
+		}
+	} else if lengthOfCipher == lengthOfSecretKey {
+		keysToStringifiedNums := convertSecretKey(secretKey)
+		
+		for index, numOfShifts := range keysToStringifiedNums {
+			numOfShifts, _ := strconv.Atoi(numOfShifts)
+			positionOfCipherCharInAlphabet := mapAlphabetToNum()[splitCipher[index]]
+			if positionOfCipherCharInAlphabet - numOfShifts > 0 {
+				plaintext = append(plaintext, mapNumToAlphabet()[int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))])
+			} else {
+				plaintext = append(plaintext, mapNumToAlphabet()[(26 - int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))) % 26])
+			}
+		}
+    }
+
+	return strings.Join(plaintext, "")
 }
 
 func main() {
-	// fmt.Println(encrypt("HEAD", "DUH"))
-	fmt.Println(encrypt("CRYPTO", "DUH"))
+	fmt.Println(encrypt("HEAD", "DUH"))
+	// fmt.Println("CRYPTO encrypted is :", encrypt("CRYPTO", "DUH")) // should print [ F L F S N V]
+	fmt.Println(decrypt("KYHG", "DUH"))
+	// fmt.Println("FLFSNV decrypted is :", decrypt("FLFSNV", "DUH")) // should print "CRYPTO"
 }
