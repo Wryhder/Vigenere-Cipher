@@ -112,7 +112,7 @@ func encrypt(plaintext, secretKey string) string {
 		// as explained above) are combined and converted to shift positions using mapAlphabetToNum()
 		keysToStringifiedNums := convertSecretKey(firstPartOfRepeatedSecretKey + secondPartOfRepeatedSecretKey)
 		
-		// The plaintext is converted to a cipher by shifting each character as specified by the secret
+		// The plaintext is converted to a cipher by shifting each character forward as specified by the secret
 		for index, numOfShifts := range keysToStringifiedNums {
 			numOfShifts, _ := strconv.Atoi(numOfShifts)
 			positionOfPlaintextCharInAlphabet := mapAlphabetToNum()[splitPlaintext[index]]
@@ -123,7 +123,7 @@ func encrypt(plaintext, secretKey string) string {
 	} else if lengthOfPlaintext == lengthOfSecretKey {
 		keysToStringifiedNums := convertSecretKey(secretKey)
 		
-		// The plaintext is converted to a cipher by shifting each character as specified by the secret
+		// The plaintext is converted to a cipher by shifting each character foward as specified by the secret
 		for index, numOfShifts := range keysToStringifiedNums {
 			numOfShifts, _ := strconv.Atoi(numOfShifts)
 			positionOfPlaintextCharInAlphabet := mapAlphabetToNum()[splitPlaintext[index]]
@@ -142,32 +142,48 @@ func decrypt(cipher, secretKey string) string {
 	splitCipher := strings.Split(cipher, "")
 	plaintext := []string{""}
 
+	// It's assumed that the cipher will always be longer than the secret key
+	// or, at least, be of equal length
 	if lengthOfCipher != lengthOfSecretKey {
 		splitSecret := strings.Split(secretKey, "")
 
+		// Unless the length of the cipher is perfectly divisible by the length of the secret key,
+		// there will be leftover characters. So, we repeat the secret (e.g "DUH") until the length
+		// of the repeated secret (e.g "DUHDUH") is as long as or nearly as long as the length of the
+		// cipher (e.g "FLFSNV"). If (`lengthOfCipher` % `lengthOfSecretKey`) > 0, that means
+		// there are unaccounted characters in the cipher. These unaccounted characters are gotten
+		// and stored in `secondPartOfRepeatedSecretKey`
 		firstPartOfRepeatedSecretKey := strings.Repeat(secretKey, lengthOfCipher / lengthOfSecretKey)
 		secondPartOfRepeatedSecretKey := strings.Join(splitSecret[:lengthOfCipher % lengthOfSecretKey], "")
 
+		// The two parts of the repeated secret (if indeed there were leftover characters
+		// as explained above) are combined and converted to shift positions using mapAlphabetToNum()
 		keysToStringifiedNums := convertSecretKey(firstPartOfRepeatedSecretKey + secondPartOfRepeatedSecretKey)
 		
+		// The plaintext is converted to a cipher by shifting each character backward as specified by the secret
 		for index, numOfShifts := range keysToStringifiedNums {
 			numOfShifts, _ := strconv.Atoi(numOfShifts)
 			positionOfCipherCharInAlphabet := mapAlphabetToNum()[splitCipher[index]]
 			if positionOfCipherCharInAlphabet - numOfShifts > 0 {
 				plaintext = append(plaintext, mapNumToAlphabet()[int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))])
 			} else {
+				// The magic number 26 is used to keep the index given to mapNumToAlphabet()
+				// between 0 and 25 (since each character in the alphabet maps to a number within that range)
 				plaintext = append(plaintext, mapNumToAlphabet()[(26 - int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))) % 26])
 			}
 		}
 	} else if lengthOfCipher == lengthOfSecretKey {
 		keysToStringifiedNums := convertSecretKey(secretKey)
 		
+		// The plaintext is converted to a cipher by shifting each character backward as specified by the secret
 		for index, numOfShifts := range keysToStringifiedNums {
 			numOfShifts, _ := strconv.Atoi(numOfShifts)
 			positionOfCipherCharInAlphabet := mapAlphabetToNum()[splitCipher[index]]
 			if positionOfCipherCharInAlphabet - numOfShifts > 0 {
 				plaintext = append(plaintext, mapNumToAlphabet()[int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))])
 			} else {
+				// The magic number 26 is used to keep the index given to mapNumToAlphabet()
+				// between 0 and 25 (since each character in the alphabet maps to a number within that range)
 				plaintext = append(plaintext, mapNumToAlphabet()[(26 - int(math.Abs(float64(positionOfCipherCharInAlphabet - numOfShifts)))) % 26])
 			}
 		}
