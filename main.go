@@ -136,6 +136,9 @@ func encrypt(plaintext, secretKey string) string {
 	return strings.Join(cipher, "")
 }
 
+/* TODO: Decrypt function only properly decrypts single words. It fails for sentences. For example,
+a decrypted string "HEAD IS NOT BODY" shows up as "HEADAISANOTABODY".
+Also, the function does not account for lowcase string arguments. */
 func decrypt(cipher, secretKey string) string {
 	lengthOfCipher := len([]rune(cipher))
 	lengthOfSecretKey := len([]rune(secretKey))
