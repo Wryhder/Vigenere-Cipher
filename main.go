@@ -194,7 +194,8 @@ func decrypt(cipher, secretKey string) string {
 
 func main() {
 	fmt.Println(encrypt("HEAD", "DUH"))
-	// fmt.Println("CRYPTO encrypted is :", encrypt("CRYPTO", "DUH")) // should print [ F L F S N V]
+	fmt.Println(encrypt("HEAD IS NOT BODY", "DUH"))
+	fmt.Println("CRYPTO encrypted is :", encrypt("CRYPTO", "DUH")) // should print [ F L F S N V]
 	fmt.Println(decrypt("KYHG", "DUH"))
-	// fmt.Println("FLFSNV decrypted is :", decrypt("FLFSNV", "DUH")) // should print "CRYPTO"
+	fmt.Println("FLFSNV decrypted is :", decrypt("FLFSNV", "DUH")) // should print "CRYPTO"
 }
