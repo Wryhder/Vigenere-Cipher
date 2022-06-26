@@ -1,3 +1,16 @@
+/* 
+Source: Idea Bag 2
+
+Title: Vigenère Cipher
+Difficulty: Intermediate
+
+Make a program to accept some plaintext and a key from the user and use them to perform a Vigenère Cipher and output the result.
+
+More info on Vigenère Ciphers: https://en.m.wikipedia.org/wiki/Vigenère_cipher
+
+Bonus points: Give the user a message if their input is invalid (empty/just numbers/etc)
+*/
+
 package main
 
 import (
