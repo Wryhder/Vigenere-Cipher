@@ -112,6 +112,11 @@ func encrypt(plaintext, secretKey string) string {
 	if lengthOfSplitPlaintext != lengthOfSecretKey {
 		splitSecret := strings.Split(secretKey, "")
 
+		// If the length of the (split) plaintext is not perfectly divisible by the length of the secret
+		// key, that is, (`lengthOfSplitPlaintext` % `lengthOfSecretKey`) != 0,
+		// it means that there are unaccounted characters at the end of the plaintext. So, we repeat the 
+		// secret (e.g "DUH") until the length of the repeated secret (e.g "DUHDUH") is nearly as long 
+		// as the length of the plaintext (e.g "CRYPTOS"). Then, any unaccounted characters ("S" in this case) are gotten and stored in `secondPartOfRepeatedSecretKey`
 		firstPartOfRepeatedSecretKey := strings.Repeat(secretKey, lengthOfSplitPlaintext / lengthOfSecretKey)
 		secondPartOfRepeatedSecretKey := strings.Join(splitSecret[:lengthOfSplitPlaintext % lengthOfSecretKey], "")
 
@@ -155,12 +160,11 @@ func decrypt(cipher, secretKey string) string {
 	if lengthOfCipher != lengthOfSecretKey {
 		splitSecret := strings.Split(secretKey, "")
 
-		// Unless the length of the cipher is perfectly divisible by the length of the secret key,
-		// there will be leftover characters. So, we repeat the secret (e.g "DUH") until the length
-		// of the repeated secret (e.g "DUHDUH") is as long as or nearly as long as the length of the
-		// cipher (e.g "FLFSNV"). If (`lengthOfCipher` % `lengthOfSecretKey`) > 0, that means
-		// there are unaccounted characters in the cipher. These unaccounted characters are gotten
-		// and stored in `secondPartOfRepeatedSecretKey`
+		// If the length of the (split) plaintext is not perfectly divisible by the length of the secret
+		// key, that is, (`lengthOfSplitPlaintext` % `lengthOfSecretKey`) != 0,
+		// it means that there are unaccounted characters at the end of the plaintext. So, we repeat the 
+		// secret (e.g "DUH") until the length of the repeated secret (e.g "DUHDUH") is nearly as long 
+		// as the length of the cipher (e.g "FLFSNVv"). Then, any unaccounted characters ("v" in this case) are gotten and stored in `secondPartOfRepeatedSecretKey`
 		firstPartOfRepeatedSecretKey := strings.Repeat(secretKey, lengthOfCipher / lengthOfSecretKey)
 		secondPartOfRepeatedSecretKey := strings.Join(splitSecret[:lengthOfCipher % lengthOfSecretKey], "")
 
