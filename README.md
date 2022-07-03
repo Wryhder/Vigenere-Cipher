@@ -1,3 +1,3 @@
 # Vigenère Cipher
 
-Encrypts plaintext and decrypts a cipher with user-provided key (using the Vigenère Cipher method)
+Encrypts plaintext and decrypts ciphertext with user-provided key (using the Vigenère Cipher method)
