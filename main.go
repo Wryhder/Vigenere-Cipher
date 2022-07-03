@@ -95,31 +95,25 @@ func convertSecretKey(secretKey string) (keysToStringifiedNums []string) {
 	return keysToStringifiedNums
 }
 
-/* TODO: Encrypt function only properly encrypts single words. It fails for sentences because
-the plaintext is split directly using strings.Split(plaintext, ""). Modify function such that
-spaces are removed, then use the Split() method to get all the characters in the plaintext.
-Also, the function does not account for lowcase string arguments. */
+/* TODO: Encrypt does not account for lowcase string arguments. */
 
 // This function encrypts plaintext and returns the cipher
 func encrypt(plaintext, secretKey string) string {
-	lengthOfPlaintext := len([]rune(plaintext))
-	lengthOfSecretKey := len([]rune(secretKey))
-	splitPlaintext := strings.Split(plaintext, "")
+
+	// Remove any spaces in plaintext before splitting it
+	splitPlaintext := strings.Split(strings.ReplaceAll(plaintext, " ", ""), "")
 	cipher := []string{""}
+
+	lengthOfSplitPlaintext := len(splitPlaintext)
+	lengthOfSecretKey := len(secretKey)
 
 	// It's assumed that the plaintext will always be longer than the secret key
 	// or, at least, be of equal length
-	if lengthOfPlaintext != lengthOfSecretKey {
+	if lengthOfSplitPlaintext != lengthOfSecretKey {
 		splitSecret := strings.Split(secretKey, "")
 
-		// Unless the length of the plaintext is perfectly divisible by the length of the secret key,
-		// there will be leftover characters. So, we repeat the secret (e.g "DUH") until the length
-		// of the repeated secret (e.g "DUHDUH") is as long as or nearly as long as the length of the
-		// plaintext (e.g "CRYPTO"). If (`lengthOfPlaintext` % `lengthOfSecretKey`) > 0, that means
-		// there are unaccounted characters in the plaintext. These unaccounted characters are gotten
-		// and stored in `secondPartOfRepeatedSecretKey`
-		firstPartOfRepeatedSecretKey := strings.Repeat(secretKey, lengthOfPlaintext / lengthOfSecretKey)
-		secondPartOfRepeatedSecretKey := strings.Join(splitSecret[:lengthOfPlaintext % lengthOfSecretKey], "")
+		firstPartOfRepeatedSecretKey := strings.Repeat(secretKey, lengthOfSplitPlaintext / lengthOfSecretKey)
+		secondPartOfRepeatedSecretKey := strings.Join(splitSecret[:lengthOfSplitPlaintext % lengthOfSecretKey], "")
 
 		// The two parts of the repeated secret (if indeed there were leftover characters
 		// as explained above) are combined and converted to shift positions using mapAlphabetToNum()
@@ -133,7 +127,7 @@ func encrypt(plaintext, secretKey string) string {
 			// between 0 and 25 (since each character in the alphabet maps to a number within that range)
 			cipher = append(cipher, mapNumToAlphabet()[(positionOfPlaintextCharInAlphabet + numOfShifts) % 26])
 		}
-	} else if lengthOfPlaintext == lengthOfSecretKey {
+	} else if lengthOfSplitPlaintext == lengthOfSecretKey {
 		keysToStringifiedNums := convertSecretKey(secretKey)
 		
 		// The plaintext is converted to a cipher by shifting each character foward as specified by the secret
@@ -149,9 +143,7 @@ func encrypt(plaintext, secretKey string) string {
 	return strings.Join(cipher, "")
 }
 
-/* TODO: Decrypt function only properly decrypts single words. It fails for sentences. For example,
-a decrypted string "HEAD IS NOT BODY" shows up as "HEADAISANOTABODY".
-Also, the function does not account for lowcase string arguments. */
+/* TODO: Decrypt does not account for lowcase string arguments. */
 func decrypt(cipher, secretKey string) string {
 	lengthOfCipher := len([]rune(cipher))
 	lengthOfSecretKey := len([]rune(secretKey))
