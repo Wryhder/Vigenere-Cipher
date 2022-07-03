@@ -147,6 +147,7 @@ func encrypt(plaintext, secretKey string) string {
 	return strings.Join(cipher, "")
 }
 
+// This function decrypts ciphertext and returns the plaintext
 func decrypt(cipher, secretKey string) string {
 	lengthOfCipher := len([]rune(cipher))
 	lengthOfSecretKey := len([]rune(secretKey))
