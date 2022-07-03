@@ -95,11 +95,10 @@ func convertSecretKey(secretKey string) (keysToStringifiedNums []string) {
 	return keysToStringifiedNums
 }
 
-/* TODO: Encrypt does not account for lowcase string arguments. */
-
 // This function encrypts plaintext and returns the cipher
 func encrypt(plaintext, secretKey string) string {
-
+	// Account for lowercase arguments
+	plaintext = strings.ToUpper(plaintext)
 	// Remove any spaces in plaintext before splitting it
 	splitPlaintext := strings.Split(strings.ReplaceAll(plaintext, " ", ""), "")
 	cipher := []string{""}
@@ -148,10 +147,13 @@ func encrypt(plaintext, secretKey string) string {
 	return strings.Join(cipher, "")
 }
 
-/* TODO: Decrypt does not account for lowcase string arguments. */
 func decrypt(cipher, secretKey string) string {
 	lengthOfCipher := len([]rune(cipher))
 	lengthOfSecretKey := len([]rune(secretKey))
+
+	// Account for lowercase arguments
+	cipher = strings.ToUpper(cipher)
+
 	splitCipher := strings.Split(cipher, "")
 	plaintext := []string{""}
 
@@ -207,7 +209,7 @@ func decrypt(cipher, secretKey string) string {
 func main() {
 	fmt.Println(encrypt("HEAD", "DUH"))
 	fmt.Println(encrypt("HEAD IS NOT BODY", "DUH"))
-	fmt.Println("CRYPTO encrypted is :", encrypt("CRYPTO", "DUH")) // should print [ F L F S N V]
+	fmt.Println("CRYPTOS encrypted is :", encrypt("CRYPTO", "DUH")) // should print [ F L F S N V]
 	fmt.Println(decrypt("KYHG", "DUH"))
 	fmt.Println("FLFSNV decrypted is :", decrypt("FLFSNV", "DUH")) // should print "CRYPTO"
 }
