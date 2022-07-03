@@ -2,17 +2,18 @@ package main
 
 import (
     "testing"
+    "strings"
 )
 
 var testEncryptionPhrases = map[int]string{
     0: "HEAD", // should encrypt to "KYHG"
-    1: "HEAD IS NOT BODY", // should encrypt to "KYHGUPVUURNHEIKB" ?
+    1: "HEAD IS NOT BODY", // should encrypt to "KYHGCZQIAEIKB"
     2: "CRYPTO", // should encrypt to "FLFSNV"
 }
 
 var testDecryptionPhrases = map[int]string{
     0: "KYHG", // should decrypt to "HEAD"
-    1: "KYHGUPVUURNHEIKB", // should decrypt to "HEAD IS NOT BODY"
+    1: "KYHGCZQIAEIKB", // should decrypt to "HEAD IS NOT BODY"
     2: "FLFSNV", // should decrypt to "CRYPTO"
 }
 
@@ -35,7 +36,7 @@ func TestDecrypt(t *testing.T) {
 
     for index, phrase := range testDecryptionPhrases {
         actualString := decrypt(phrase, secret)
-        expectedString := testEncryptionPhrases[index]
+        expectedString := strings.Join(strings.Split(testEncryptionPhrases[index], " "), "")
         
         if actualString != expectedString{
             t.Errorf("Expected String(%s) is not same as"+
